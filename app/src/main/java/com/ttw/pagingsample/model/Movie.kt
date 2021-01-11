@@ -4,10 +4,10 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.Index
 import com.google.gson.annotations.SerializedName
-
+/*
 @Entity(
     primaryKeys = ["id"]
-)
+)*/
 data class Movie(
     @field:SerializedName("id")
     val id: Int,
