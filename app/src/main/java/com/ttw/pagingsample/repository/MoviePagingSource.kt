@@ -10,19 +10,22 @@ import java.io.IOException
 
 private const val MOVIE_STARTING_PAGE_INDEX = 1
 
-class MoviePagingSource(private val api: MovieApi) : PagingSource<Int, Movie>() {
+class MoviePagingSource(private val repository: MovieRepository) : PagingSource<Int, Movie>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
-        val position = params.key ?: MOVIE_STARTING_PAGE_INDEX
+        val nextPage = params.key ?: 1
         return try {
-            val itemPage = params.loadSize
-            val response = api.getNowPlaying(position).execute()
-            val movie = response.body()!!.movieResults
+            val response = repository.getPopularMovies(nextPage).body()
+            val movie = response!!.movieResults
+
+            Log.d("Page Size >>>>>", response.page.toString())
 
             LoadResult.Page(
                 data = movie,
-                prevKey = if (position == 1) null else position - 1,
-                nextKey = if (movie.isEmpty()) null else position + 1
+                prevKey = if (nextPage == 1) null else nextPage - 1,
+                nextKey = if (nextPage < response.totalPages!!)
+                    response.page.plus(1) else null
             )
+
 
         } catch (exception: IOException) {
             return LoadResult.Error(exception)

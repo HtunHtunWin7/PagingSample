@@ -8,6 +8,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.ttw.pagingsample.R
 import com.ttw.pagingsample.adapters.MovieAdapter.*
 import com.ttw.pagingsample.databinding.MovieItemBinding
 import com.ttw.pagingsample.model.Movie
@@ -21,11 +22,12 @@ class MovieAdapter : PagingDataAdapter<Movie, MovieAdapter.MovieViewHolder>(Movi
             Glide.with(binding.root.context).load(imgPath + movie.poster_path)
                 .into(binding.imgMovie)
             binding.txtMovieTitle.text = movie.title
-            Toast.makeText(binding.root.context,"Hello",Toast.LENGTH_LONG).show()
+            binding.txtDateTime.text = movie.release_date
+            binding.ratingBar.rating = movie.popularity
+            binding.txtOriginalTitle.text = movie.original_title
         }
 
     }
-
 
     private class MovieDiffCallback : DiffUtil.ItemCallback<Movie>() {
         override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {

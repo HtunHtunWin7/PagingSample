@@ -6,14 +6,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ttw.pagingsample.R
 import com.ttw.pagingsample.adapters.MovieAdapter
+import com.ttw.pagingsample.adapters.MovieLoadingStateAdapter
 import com.ttw.pagingsample.databinding.MovieFragmentBinding
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
@@ -44,6 +47,7 @@ class MovieFragment : Fragment(), KodeinAware {
         return binding.root
     }
 
+    @Suppress("DEPRECATION")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this, factory).get(MovieViewModel::class.java)
@@ -60,14 +64,40 @@ class MovieFragment : Fragment(), KodeinAware {
         binding.recyclerMovie.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-            adapter = movieAdapter
+            adapter = movieAdapter.withLoadStateFooter(
+                footer = MovieLoadingStateAdapter { movieAdapter.retry() }
+            )
+        }
+        movieAdapter.addLoadStateListener { loadState ->
+            if (loadState.refresh is LoadState.Loading) {
+                if (movieAdapter.snapshot().isEmpty()) {
+                    binding.progressBar.isVisible = true
+                }
+                //binding.errorTxt.isVisible = false
+            } else {
+                binding.progressBar.isVisible = false
+                binding.swipeRefreshLayout.isRefreshing = false
+                val error = when {
+                    loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
+                    loadState.append is LoadState.Error -> loadState.append as LoadState.Error
+                    loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
+
+                    else -> null
+                }
+                error?.let {
+                    if (movieAdapter.snapshot().isEmpty()) {
+                        // binding.errorTxt.isVisible = true
+                        // binding.errorTxt.text = it.error.localizedMessage
+                    }
+                }
+            }
         }
     }
 
     private fun getPopularMovies() {
-         searchJob?.cancel()
+        searchJob?.cancel()
         searchJob = lifecycleScope.launch {
-            viewModel.getNowPlayingMovies()
+            viewModel.getMovieListStream()
                 .collectLatest {
                     movieAdapter.submitData(it)
                 }

@@ -5,6 +5,7 @@
 
     <data>
 
+
     </data>
 
     <FrameLayout
@@ -16,13 +17,13 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.card.MaterialCardView
-            app:cardBackgroundColor="#ffffff"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:cardCornerRadius="15dp"
-            app:cardElevation="12dp">
+            app:cardElevation="5dp">
 
             <ImageView
+                android:background="@color/white"
                 android:id="@+id/imgMovie"
                 android:layout_width="136dp"
                 android:layout_height="210dp"
@@ -53,6 +54,7 @@
                     tools:text="Survivor" />
 
                 <TextView
+                    android:id="@+id/txtOriginalTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -60,6 +62,7 @@
                     tools:text="Original title" />
 
                 <RatingBar
+                    android:id="@+id/ratingBar"
                     style="@style/Widget.AppCompat.RatingBar.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -68,6 +71,7 @@
                     android:numStars="5"/>
 
                 <TextView
+                    android:id="@+id/txtDateTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"

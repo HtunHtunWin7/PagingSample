@@ -3,6 +3,7 @@ package com.ttw.pagingsample
 import android.app.Application
 import com.ttw.pagingsample.api.MovieApi
 import com.ttw.pagingsample.api.NetworkConnectionInterceptor
+import com.ttw.pagingsample.database.MovieDatabase
 import com.ttw.pagingsample.repository.MovieRepository
 import com.ttw.pagingsample.ui.MovieViewModelFactory
 import org.kodein.di.Kodein
@@ -22,6 +23,7 @@ class SampleApp : Application(), KodeinAware {
         bind() from singleton { MovieApi(instance()) }
         bind() from singleton { MovieViewModelFactory(instance()) }
         bind() from singleton { MovieRepository(instance()) }
+        bind() from singleton { MovieDatabase(instance()) }
     }
 
     }

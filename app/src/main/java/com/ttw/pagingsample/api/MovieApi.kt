@@ -7,6 +7,7 @@ import com.readystatesoftware.chuck.ChuckInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -15,13 +16,19 @@ import java.util.concurrent.TimeUnit
 
 
 interface MovieApi {
-    @GET("now_playing")
-    fun getNowPlaying(@Query("page") page: Int): Call<MovieResponse>
+    @GET("discover/movie?sort_by=vote_count.desc")
+    suspend fun getNowPlaying(@Query("page") page: Int): Response<MovieResponse>
+
+
+    @GET("discover/movie?sort_by=vote_count.desc")
+    suspend fun getNowPlaying(): Response<MovieResponse>
+
+
 
 
     companion object {
         const val API_KEY = "11d4fbee2af9f6b42f5fcec50cc2e357"
-        private const val BASE_URL = "https://api.themoviedb.org/3/movie/"
+        private const val BASE_URL = "https://api.themoviedb.org/3/"
         operator fun invoke(
             networkConnectionInterceptor: NetworkConnectionInterceptor
         ): MovieApi {
