@@ -22,10 +22,9 @@ class MoviePagingSource(private val repository: MovieRepository) : PagingSource<
             LoadResult.Page(
                 data = movie,
                 prevKey = if (nextPage == 1) null else nextPage - 1,
-                nextKey = if (nextPage < response.totalPages!!)
-                    response.page.plus(1) else null
+                nextKey = if (response.movieResults.isEmpty())
+                    null else nextPage + 1
             )
-
 
         } catch (exception: IOException) {
             return LoadResult.Error(exception)

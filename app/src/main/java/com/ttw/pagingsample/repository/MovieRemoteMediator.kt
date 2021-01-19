@@ -1,5 +1,6 @@
 package com.ttw.pagingsample.repository
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -53,6 +54,7 @@ class MovieRemoteMediator(
                     database.keyDao().saveKeys(key = keys)
                 }
             }
+            Log.d("Page >>>>>> ",page.toString())
             MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (exception: IOException) {
             MediatorResult.Error(exception)

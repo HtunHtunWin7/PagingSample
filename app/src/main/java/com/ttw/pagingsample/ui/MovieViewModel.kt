@@ -11,21 +11,25 @@ import com.ttw.pagingsample.repository.MoviePagingSource
 import com.ttw.pagingsample.repository.MovieRepository
 import kotlinx.coroutines.flow.Flow
 
-class MovieViewModel(private val repository: MovieRepository) :
+class MovieViewModel(private val pagingSource: MoviePagingSource,private val repository: MovieRepository) :
     ViewModel() {
     private lateinit var currentResult: Flow<PagingData<Movie>>
 
-    /*fun getNowPlayingMovies(): Flow<PagingData<Movie>> {
-        val newResult: Flow<PagingData<Movie>> =
-            repository.getNowPlayingMovies().cachedIn(viewModelScope)
-        currentResult = newResult
-        return newResult
-    }*/
+    val moviePager = Pager(
+        config = PagingConfig(10)
+    ) {
+        pagingSource
+    }.flow.cachedIn(viewModelScope)
 
     fun getMovieListStream(): Flow<PagingData<Movie>> {
         return Pager(PagingConfig(20)) {
-            MoviePagingSource(repository)
+            pagingSource
         }.flow
+    }
+
+    fun getMovies():Flow<PagingData<Movie>>
+    {
+        return repository.getMovies().cachedIn(viewModelScope)
     }
 
 }
