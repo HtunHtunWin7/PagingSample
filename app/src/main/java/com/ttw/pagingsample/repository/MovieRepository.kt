@@ -13,19 +13,18 @@ import kotlinx.coroutines.flow.Flow
 
 class MovieRepository constructor(private val movieApi: MovieApi,private val database: MovieDatabase) {
 
-
     suspend fun getPopularMovies(page: Int) : Response<MovieResponse> {
         return movieApi.getNowPlaying(page)
     }
     @OptIn(ExperimentalPagingApi::class)
     fun getMovies():Flow<PagingData<Movie>> {
         return Pager(
-            PagingConfig(pageSize = 20, enablePlaceholders = false, prefetchDistance = 3),
+            PagingConfig(pageSize = 10, enablePlaceholders = false, prefetchDistance = 3),
             remoteMediator = MovieRemoteMediator(1, database = database,service = movieApi ),
             pagingSourceFactory = { database.movieDao().getMovies() }
         ).flow
-    }
-    /*fun getNowPlayingMovies(): Flow<PagingData<Movie>> {
+    }/*
+    fun getNowPlayingMovies(): Flow<PagingData<Movie>> {
         return Pager(config = PagingConfig(enablePlaceholders = false, pageSize = 20),
             pagingSourceFactory = {
                 MoviePagingSource(movieApi)

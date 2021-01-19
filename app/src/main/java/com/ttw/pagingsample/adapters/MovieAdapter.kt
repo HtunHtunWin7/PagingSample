@@ -49,5 +49,4 @@ class MovieAdapter : PagingDataAdapter<Movie, MovieAdapter.MovieViewHolder>(Movi
             MovieItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
-
 }

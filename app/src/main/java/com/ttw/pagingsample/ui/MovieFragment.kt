@@ -30,7 +30,6 @@ class MovieFragment : Fragment(), KodeinAware {
 
     companion object {
         fun newInstance() = MovieFragment()
-
     }
 
     private lateinit var viewModel: MovieViewModel
@@ -50,10 +49,16 @@ class MovieFragment : Fragment(), KodeinAware {
     @Suppress("DEPRECATION")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this, factory).get(MovieViewModel::class.java)
 
         setUpViews()
-        getPopularMovies()
+        //getPopularMovies()
+        getMovies()
         binding.swipeRefreshLayout.setOnClickListener {
             movieAdapter.refresh()
         }
@@ -81,7 +86,6 @@ class MovieFragment : Fragment(), KodeinAware {
                     loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
                     loadState.append is LoadState.Error -> loadState.append as LoadState.Error
                     loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
-
                     else -> null
                 }
                 error?.let {
@@ -101,6 +105,13 @@ class MovieFragment : Fragment(), KodeinAware {
                 .collectLatest {
                     movieAdapter.submitData(it)
                 }
+        }
+    }
+    private fun getMovies(){
+        lifecycleScope.launch {
+            viewModel.getMovies().collectLatest {
+                movieAdapter.submitData(it)
+            }
         }
     }
 }
