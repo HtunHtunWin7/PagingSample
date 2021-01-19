@@ -97,7 +97,7 @@ class MovieFragment : Fragment(), KodeinAware {
     private fun getPopularMovies() {
         searchJob?.cancel()
         searchJob = lifecycleScope.launch {
-            viewModel.getMovieListStream()
+            viewModel.getMovieWithDb()
                 .collectLatest {
                     movieAdapter.submitData(it)
                 }

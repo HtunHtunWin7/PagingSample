@@ -22,6 +22,10 @@ class MovieViewModel(private val repository: MovieRepository) :
         return newResult
     }*/
 
+    fun getMovieWithDb():Flow<PagingData<Movie>>{
+        return repository.getMovies().cachedIn(viewModelScope)
+    }
+
     fun getMovieListStream(): Flow<PagingData<Movie>> {
         return Pager(PagingConfig(20)) {
             MoviePagingSource(repository)
