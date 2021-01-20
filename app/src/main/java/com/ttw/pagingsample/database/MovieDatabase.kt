@@ -4,13 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.ttw.pagingsample.database.dao.KeyDao
 import com.ttw.pagingsample.database.dao.MovieDao
-import com.ttw.pagingsample.model.Keys
+import com.ttw.pagingsample.database.dao.RemoteKeysDao
 import com.ttw.pagingsample.model.Movie
+import com.ttw.pagingsample.model.RemoteKeys
 
 @Database(
-    entities = [Movie::class, Keys::class],
+    entities = [Movie::class, RemoteKeys::class],
     version = 1,
     exportSchema = false
 )
@@ -24,6 +24,6 @@ abstract class MovieDatabase : RoomDatabase() {
     }
 
     abstract fun movieDao(): MovieDao
-    abstract fun keyDao(): KeyDao
+    abstract fun remoteKeysDao(): RemoteKeysDao
 }
 
