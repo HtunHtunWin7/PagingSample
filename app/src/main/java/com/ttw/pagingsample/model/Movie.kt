@@ -1,10 +1,12 @@
 package com.ttw.pagingsample.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 @Entity(
-    primaryKeys = ["id"]
+     primaryKeys = ["id"]
 )
 data class Movie(
     @field:SerializedName("id")

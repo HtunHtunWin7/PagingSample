@@ -19,7 +19,7 @@ class MovieRepository constructor(private val movieApi: MovieApi,private val dat
     @OptIn(ExperimentalPagingApi::class)
     fun getMovies():Flow<PagingData<Movie>> {
         return Pager(
-            PagingConfig(pageSize = 10, enablePlaceholders = false, prefetchDistance = 3),
+            PagingConfig(pageSize = 20, enablePlaceholders = false, prefetchDistance = 3),
             remoteMediator = MovieRemoteMediator(1, database = database,service = movieApi ),
             pagingSourceFactory = { database.movieDao().getMovies() }
         ).flow
