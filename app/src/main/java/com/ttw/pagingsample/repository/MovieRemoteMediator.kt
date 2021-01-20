@@ -39,7 +39,6 @@ class MovieRemoteMediator(
             val response = service.getNowPlaying(page = page).body()
             val endOfPaginationReached = response?.movieResults!!.size < state.config.pageSize
             if (response != null) {
-
                 database.withTransaction {
                     if (loadType == LoadType.REFRESH) {
                         database.keyDao().clearKeys()
