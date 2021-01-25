@@ -57,7 +57,6 @@ class MovieFragment : Fragment(), KodeinAware {
         viewModel = ViewModelProvider(this, factory).get(MovieViewModel::class.java)
 
         setUpViews()
-        //getPopularMovies()
         getMovies()
         binding.swipeRefreshLayout.setOnClickListener {
             movieAdapter.refresh()
@@ -98,20 +97,12 @@ class MovieFragment : Fragment(), KodeinAware {
         }
     }
 
-    private fun getPopularMovies() {
-        searchJob?.cancel()
-        searchJob = lifecycleScope.launch {
-            viewModel.getMovieWithDb()
-                .collectLatest {
-                    movieAdapter.submitData(it)
-                }
-        }
-    }
-    private fun getMovies(){
+    private fun getMovies() {
         lifecycleScope.launch {
             viewModel.getMovies().collectLatest {
                 movieAdapter.submitData(it)
             }
         }
     }
+
 }

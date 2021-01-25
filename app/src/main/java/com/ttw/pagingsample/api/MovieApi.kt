@@ -17,11 +17,8 @@ import java.util.concurrent.TimeUnit
 
 interface MovieApi {
     @GET("discover/movie?sort_by=vote_count.desc")
-    suspend fun getNowPlaying(@Query("page") page: Int): Response<MovieResponse>
+    suspend fun getNowPlaying(@Query("page") page: Int,@Query("per_page")perPage:Int): Response<MovieResponse>
 
-
-    @GET("discover/movie?sort_by=vote_count.desc")
-    suspend fun getNowPlaying(): Response<MovieResponse>
 
 
 

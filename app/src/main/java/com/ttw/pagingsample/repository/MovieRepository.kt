@@ -1,5 +1,6 @@
 package com.ttw.pagingsample.repository
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -14,21 +15,21 @@ import kotlinx.coroutines.flow.Flow
 class MovieRepository constructor(private val movieApi: MovieApi,private val database: MovieDatabase) {
 
     suspend fun getPopularMovies(page: Int) : Response<MovieResponse> {
-        return movieApi.getNowPlaying(page)
+        return movieApi.getNowPlaying(page,20)
     }
-    @OptIn(ExperimentalPagingApi::class)
-    fun getMovies():Flow<PagingData<Movie>> {
-        return Pager(
-            PagingConfig(pageSize = 20, enablePlaceholders = false, prefetchDistance = 3),
-            remoteMediator = MovieRemoteMediator(1, database = database,service = movieApi ),
-            pagingSourceFactory = { database.movieDao().getMovies() }
-        ).flow
-    }/*
-    fun getNowPlayingMovies(): Flow<PagingData<Movie>> {
-        return Pager(config = PagingConfig(enablePlaceholders = false, pageSize = 20),
-            pagingSourceFactory = {
-                MoviePagingSource(movieApi)
-            }).flow
 
-    }*/
+    @OptIn(ExperimentalPagingApi::class)
+    fun getRemoteMovies(): Flow<PagingData<Movie>> {
+        val pagingSourceFactory = { database.movieDao().getMovies() }
+
+        return Pager(
+            config = PagingConfig(pageSize = NETWORK_PAGE_SIZE, enablePlaceholders = false),
+            remoteMediator = MovieRemoteMediator(database,movieApi),
+            pagingSourceFactory = pagingSourceFactory
+        ).flow
+    }
+
+    companion object {
+        private const val NETWORK_PAGE_SIZE = 10
+    }
 }
