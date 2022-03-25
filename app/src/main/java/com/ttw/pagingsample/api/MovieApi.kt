@@ -20,9 +20,6 @@ interface MovieApi {
     suspend fun getNowPlaying(@Query("page") page: Int,@Query("per_page")perPage:Int): Response<MovieResponse>
 
 
-
-
-
     companion object {
         const val API_KEY = "11d4fbee2af9f6b42f5fcec50cc2e357"
         private const val BASE_URL = "https://api.themoviedb.org/3/"

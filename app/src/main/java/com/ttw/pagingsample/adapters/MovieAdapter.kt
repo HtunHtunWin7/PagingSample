@@ -14,7 +14,7 @@ import com.ttw.pagingsample.databinding.MovieItemBinding
 import com.ttw.pagingsample.model.Movie
 
 class MovieAdapter : PagingDataAdapter<Movie, MovieAdapter.MovieViewHolder>(MovieDiffCallback()) {
-    private val imgPath = "https://image.tmdb.org/t/p/w500"
+    private val imgPath = "https://image.tmdb.org/t/p/w500/"
 
     inner class MovieViewHolder(private val binding: MovieItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -23,7 +23,7 @@ class MovieAdapter : PagingDataAdapter<Movie, MovieAdapter.MovieViewHolder>(Movi
                 .into(binding.imgMovie)
             binding.txtMovieTitle.text = movie.title
             binding.txtDateTime.text = movie.release_date
-            binding.ratingBar.rating = movie.popularity
+            binding.ratingBar.rating = movie.popularity / 50
             binding.txtOriginalTitle.text = movie.original_title
         }
 

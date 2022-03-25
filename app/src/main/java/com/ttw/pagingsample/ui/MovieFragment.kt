@@ -46,20 +46,15 @@ class MovieFragment : Fragment(), KodeinAware {
         return binding.root
     }
 
-    @Suppress("DEPRECATION")
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this, factory).get(MovieViewModel::class.java)
 
         setUpViews()
         getMovies()
-        binding.swipeRefreshLayout.setOnClickListener {
+        binding.swipeRefreshLayout.setOnRefreshListener {
             movieAdapter.refresh()
+
         }
     }
 
@@ -89,8 +84,8 @@ class MovieFragment : Fragment(), KodeinAware {
                 }
                 error?.let {
                     if (movieAdapter.snapshot().isEmpty()) {
-                        // binding.errorTxt.isVisible = true
-                        // binding.errorTxt.text = it.error.localizedMessage
+                         /*binding.errorTxt.isVisible = true
+                         binding.errorTxt.text = it.error.localizedMessage*/
                     }
                 }
             }

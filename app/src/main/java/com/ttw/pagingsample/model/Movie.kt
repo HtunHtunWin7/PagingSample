@@ -10,13 +10,13 @@ import com.google.gson.annotations.SerializedName
 )
 data class Movie(
     @field:SerializedName("id")
-    val id: Long,
+    val id: String,
     @field:SerializedName("title")
     val title: String,
     @field:SerializedName("poster_path")
     val poster_path: String?,
     @field:SerializedName("vote_average")
-    val vote_average: String,
+    val vote_average: Float,
     @field:SerializedName("overview")
     val overview: String,
     @field:SerializedName("release_date")

@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.Flow
 class MovieRepository constructor(private val movieApi: MovieApi,private val database: MovieDatabase) {
 
     suspend fun getPopularMovies(page: Int) : Response<MovieResponse> {
-        return movieApi.getNowPlaying(page,20)
+        return movieApi.getNowPlaying(page,10)
     }
 
     @OptIn(ExperimentalPagingApi::class)

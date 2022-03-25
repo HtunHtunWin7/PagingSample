@@ -1,5 +1,6 @@
 package com.ttw.pagingsample.repository
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -11,47 +12,42 @@ import com.ttw.pagingsample.model.Movie
 import com.ttw.pagingsample.model.RemoteKeys
 import retrofit2.HttpException
 import java.io.IOException
-import java.io.InvalidObjectException
 
-const val GITHUB_STARTING_PAGE_INDEX = 1
+const val STARTING_PAGE_INDEX = 1
+
 @OptIn(ExperimentalPagingApi::class)
 class MovieRemoteMediator(private val database: MovieDatabase, private val service: MovieApi) :
     RemoteMediator<Int, Movie>() {
     override suspend fun load(loadType: LoadType, state: PagingState<Int, Movie>): MediatorResult {
-
         val page = when (loadType) {
             LoadType.REFRESH -> {
+                Log.d("State >>>>> ", "refresh")
                 val remoteKeys = getRemoteKeyClosestToCurrentPosition(state)
-                remoteKeys?.nextKey?.minus(1) ?: GITHUB_STARTING_PAGE_INDEX
+                remoteKeys?.nextKey?.minus(1) ?: STARTING_PAGE_INDEX
             }
             LoadType.PREPEND -> {
+                Log.d("State >>>>> ", "prepend")
                 val remoteKeys = getRemoteKeyForFirstItem(state)
-                if (remoteKeys == null) {
-                    // The LoadType is PREPEND so some data was loaded before,
-                    // so we should have been able to get remote keys
-                    // If the remoteKeys are null, then we're an invalid state and we have a bug
-                    throw InvalidObjectException("Remote key and the prevKey should not be null")
-                }
+
                 // If the previous key is null, then we can't request more data
-                val prevKey = remoteKeys.prevKey
+                val prevKey = remoteKeys?.prevKey
                 if (prevKey == null) {
                     return MediatorResult.Success(endOfPaginationReached = true)
                 }
-                remoteKeys.prevKey
+                prevKey
             }
             LoadType.APPEND -> {
                 val remoteKeys = getRemoteKeyForLastItem(state)
-                if (remoteKeys == null || remoteKeys.nextKey == null) {
-                    throw InvalidObjectException("Remote key should not be null for $loadType")
+                val nextKey = remoteKeys?.nextKey
+                if (nextKey == null) {
+                    return MediatorResult.Success(endOfPaginationReached = remoteKeys != null)
                 }
-                remoteKeys.nextKey
+                nextKey
             }
-
         }
 
         try {
-            val apiResponse = service.getNowPlaying( page, state.config.pageSize)
-
+            val apiResponse = service.getNowPlaying(page, state.config.pageSize)
             val repos = apiResponse.body()!!.movieResults
             val endOfPaginationReached = repos.isEmpty()
             database.withTransaction {
@@ -60,8 +56,12 @@ class MovieRemoteMediator(private val database: MovieDatabase, private val servi
                     database.remoteKeysDao().clearRemoteKeys()
                     database.movieDao().clearMovie()
                 }
-                val prevKey = if (page == GITHUB_STARTING_PAGE_INDEX) null else page - 1
+                val prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1
                 val nextKey = if (endOfPaginationReached) null else page + 1
+
+                Log.d("Pre Key >>>> ", "$page")
+                Log.d("Next Key >>>> ", "$page")
+                Log.d("Page >>>> ", "$page")
                 val keys = repos.map {
                     RemoteKeys(repoId = it.id, prevKey = prevKey, nextKey = nextKey)
                 }
